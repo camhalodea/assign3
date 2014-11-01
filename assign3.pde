@@ -6,6 +6,7 @@ int flagCount; // 共插了幾支旗
 int nSlot; // 分割 nSlot*nSlot格
 int totalSlots; // 總格數
 final int SLOT_SIZE = 100; //每格大小
+int slotState;
 
 int sideLength; // SLOT_SIZE * nSlot
 int ix; // (width - sideLength)/2
@@ -67,7 +68,12 @@ void draw(){
           break;
     case GAME_RUN:
           //---------------- put you code here ----
-
+          if(slotState==SLOT_DEAD){
+            gameState=GAME_LOSE;
+          }else if (clickCount==(totalSlots-bombCount)){
+            gameState=GAME_WIN;
+          }
+          slotState=SLOT_OFF;
           // -----------------------------------
           break;
     case GAME_WIN:
@@ -85,7 +91,27 @@ void draw(){
 
 int countNeighborBombs(int col,int row){
   // -------------- Requirement B ---------
-  return 0;
+  int count=0;
+  int colLeft, colRight, rowLeft, rowRight;
+  colLeft = colRight = rowLeft = rowRight = 1;
+  if (col == 0){
+    colLeft = 0;
+  }else if (col == nSlot - 1){
+    colRight = 0;
+  }
+  if (row == 0){
+    rowLeft = 0;
+  }else if (row == nSlot - 1){
+    rowRight = 0;
+  }
+    for(int a=col-colLeft; a<=col+colRight; a++){
+    for(int b=row-rowLeft; b<=row+rowRight; b++){
+      if(slot[a][b]==SLOT_BOMB){
+        count++;
+      }
+    }
+  }
+  return count;
 }
 
 void setBombs(){
@@ -97,7 +123,11 @@ void setBombs(){
   }
   // -------------- put your code here ---------
   // randomly set bombs
-
+     for (int i=0; i < bombCount; i++){
+      int bombCol=int(random(nSlot));
+      int bombRow=int(random(nSlot));
+      slot[bombCol][bombRow]=SLOT_BOMB;
+     }
   // ---------------------------------------
 }
 
@@ -174,9 +204,16 @@ void mousePressed(){
        mouseY >= iy && mouseY <= iy+sideLength){
     
     // --------------- put you code here -------     
-
+      int col=(int)map(mouseX,ix,ix+sideLength,0,nSlot);
+      int row=(int)map(mouseY,iy,iy+sideLength,0,nSlot);
+          if (slot[col][row]==SLOT_BOMB){
+            slotState=SLOT_DEAD;
+          }else{
+            slotState=SLOT_SAFE;
+            clickCount++;
+          }
+       showSlot(col,row,slotState);
     // -------------------------
-    
   }
 }
 
