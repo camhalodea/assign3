@@ -54,7 +54,7 @@ void draw(){
     case GAME_START:
           background(180);
           image(bg,0,0,640,480);
-          textSize(16);
+          textFont(loadFont("font/Square_One.ttf"),16);
           fill(0);
           text("Choose # of bombs to continue:",10,width/3-24);
           int spacing = width/9;
@@ -159,11 +159,9 @@ void showSlot(int col, int row, int slotState){
           fill(255);
           rect(x,y,SLOT_SIZE,SLOT_SIZE);
           int count = countNeighborBombs(col,row);
-          if (count != 0){
             fill(0);
             textSize(SLOT_SIZE*3/5);
             text( count, x+15, y+15+SLOT_SIZE*3/5);
-          }
           break;
     case SLOT_FLAG:
           image(flag,x,y,SLOT_SIZE,SLOT_SIZE);
